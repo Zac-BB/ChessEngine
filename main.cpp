@@ -8,6 +8,11 @@ int main(){
     Board gameState = Board(/*"4k2r/6r1/8/8/8/8/3R4/R3K3 w Qk - 0 1"*/);
     
     // fen gamePose = stringToFen("4k2r/6r1/8/8/8/8/3R4/R3K3 w Qk - 0 1");
+
+
+    // gameState.display();
+    // gameState.play("e2e4");
+    // gameState.display();
     while(true){
         std::string userString;
         gameState.display();

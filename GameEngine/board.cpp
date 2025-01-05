@@ -19,10 +19,28 @@ Board::Board(std::string FEN_position){
 }
 void Board::display(){
     // std::cout << "Current FEN: " << m_fen << std::endl;
+    
     std::string boardImage = squaresToImage(m_squares);
     std::cout << boardImage << std::endl;   std::string image = "";
 
 }
+
+void Board::play(std::string fromTo){
+    // std::cout << "string" <<std::endl;
+    play(Move(fromTo));
+}
+void Board::play(Move move){
+    // std::cout << "actual play move" <<std::endl;
+    // std::cout << move.startSquare << " , " << move.targetSquare <<std::endl;
+    m_squares[move.targetSquare] = m_squares[move.startSquare];
+    m_squares[move.startSquare] = Piece::None;
+    // std::cout << "made it to the end" <<std::endl;
+}
+
+
+
+
+
 int gridToIndex(int row, int col){
     return 8 * row + col;
 }
@@ -36,7 +54,6 @@ void fenToSquares(std::string fen_position,uint8_t* board){
         {'k', Piece::King},
         {'p', Piece::Pawn}
     };
-
     uint8_t row = 0,col = 0;
     for(uint8_t i = 0;i < fen_position.size();i++){     
         char character = fen_position.at(i);
@@ -58,9 +75,13 @@ void fenToSquares(std::string fen_position,uint8_t* board){
             board[gridToIndex(row,col)] = color | fenToBoard.at(tolower(character));
             col++;
         }
-        
-
+        // std::cout << character << "--" << (int)board[gridToIndex(row,col)] <<std::endl;
+        // printf("%c -- %x\n",character,board[gridToIndex(row,col)]);
+        // std::cout << (int)row << " , " << (int)col <<std::endl;
     }
+    // for(int i = 0; i < 64; i++){
+    //     printf("%x\n",board[i]);
+    // }
 }
 
 
@@ -82,21 +103,14 @@ std::string squaresToImage(uint8_t* board){
         {Piece::Pawn,"♙"}
 
     };
-// ♜♞♝♛♚♝♞♜
-// ♟♟♟♟♟♟♟♟
-// □■□■□■□■
-// ■□■□■□■□
-// □■□■□■□■
-// ■□■□■□■□
-// ♙♙♙♙♙♙♙♙
-// ♖♘♗♕♔♗♘♖
     //hashmap chosen over array since it has a smaller memory footprint
     std::string image;
     uint8_t pieceMask = 0x0f;
     uint8_t colorMask = 0x10;
-    for(int i = 0; i < 64;i++){
+    for(int i = 0; i < 64 ;i++){
         uint8_t piece = board[i] & pieceMask;
         uint8_t color = board[i] & colorMask;
+        // std::cout << "image: " << image << std::endl;
         if(i % 8 == 0){
             image.append("\n");
         }
@@ -104,9 +118,9 @@ std::string squaresToImage(uint8_t* board){
             int row = i/8;
             int col = i%8;
             if((row + col) % 2 == 0){
-                image.append("□");
-            }else{
                 image.append("■");
+            }else{
+                image.append("□");
             }
         }else if(color == Piece::White){
             image.append(whiteMap.at(piece));
@@ -114,6 +128,7 @@ std::string squaresToImage(uint8_t* board){
             image.append(blackMap.at(piece));
         }
         
+        // std::cout << "end of the loop" << std::endl;
     }
     return image;
 }
